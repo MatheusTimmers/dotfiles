@@ -1,0 +1,103 @@
+* {
+    font-family: "Hack Nerd Font", monospace;
+    font-size: 13px;
+    min-height: 0;
+    border: none;
+    border-radius: 0;
+}
+
+@import "theme.css";
+
+window#waybar {
+    background: alpha(@base, 0.90);
+    border-bottom: 2px solid @surface;
+    color: @text;
+}
+
+tooltip {
+    background: @mantle;
+    border: 1px solid @surface;
+    border-radius: 8px;
+    color: @text;
+}
+
+/* === WORKSPACES === */
+#workspaces {
+    margin: 4px 6px;
+    padding: 0 4px;
+    background: @crust;
+    border-radius: 10px;
+}
+
+#workspaces button {
+    padding: 0 8px;
+    color: @overlay;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+#workspaces button:hover {
+    background: @surface;
+    color: @text;
+}
+
+#workspaces button.active {
+    background: @mauve;
+    color: @crust;
+    font-weight: bold;
+}
+
+#workspaces button.urgent {
+    background: @red;
+    color: @crust;
+}
+
+/* === MÚSICA === */
+#custom-music {
+    padding: 0 16px;
+    margin: 4px 2px;
+    background: @crust;
+    border-radius: 10px;
+    color: @pink;
+    font-style: italic;
+}
+
+/* === MÓDULOS DIREITA === */
+#pulseaudio, #backlight, #battery,
+#clock, #tray, #custom-lock, #custom-power {
+    padding: 0 12px;
+    margin: 4px 2px;
+    border-radius: 8px;
+    background: @mantle;
+    color: @text;
+}
+
+#clock        { color: @sapphire; font-weight: bold; }
+#pulseaudio   { color: @mauve; }
+#pulseaudio.muted { color: @overlay; }
+#backlight    { color: @yellow; }
+
+#battery      { color: @green; }
+#battery.warning  { color: @yellow; }
+#battery.critical { color: @red; }
+#battery.charging { color: @yellow; }
+#battery.plugged  { color: @teal; }
+
+#battery.critical:not(.charging) {
+    animation: blink 0.8s steps(1) infinite;
+}
+
+@keyframes blink {
+    to { background: @red; color: @crust; }
+}
+
+#custom-lock {
+    color: @sky;
+    font-size: 15px;
+}
+
+#custom-power {
+    color: @red;
+    font-size: 15px;
+    margin-right: 6px;
+}

@@ -1,0 +1,55 @@
+#!/bin/bash
+# Troca o flavor do Catppuccin para waybar, hyprland, kitty e nvim
+# Uso: switch-flavor [frappe|macchiato|mocha|latte]
+
+FLAVOR="${1:-}"
+VALID=(frappe macchiato mocha latte)
+
+if [[ -z "$FLAVOR" ]]; then
+    echo "Uso: switch-flavor <flavor>"
+    echo "Flavors disponíveis: ${VALID[*]}"
+    exit 1
+fi
+
+if [[ ! " ${VALID[*]} " =~ " ${FLAVOR} " ]]; then
+    echo "Flavor inválido: '$FLAVOR'"
+    echo "Escolha entre: ${VALID[*]}"
+    exit 1
+fi
+
+WAYBAR_THEME="$HOME/.config/waybar/themes/${FLAVOR}.css"
+HYPR_THEME="$HOME/.config/hypr/themes/${FLAVOR}.conf"
+KITTY_THEME="$HOME/.config/kitty/themes/${FLAVOR}.conf"
+
+for f in "$WAYBAR_THEME" "$HYPR_THEME" "$KITTY_THEME"; do
+    if [[ ! -f "$f" ]]; then
+        echo "Arquivo não encontrado: $f"
+        exit 1
+    fi
+done
+
+echo "Aplicando flavor: $FLAVOR"
+
+# Atualiza symlinks
+ln -sf "$WAYBAR_THEME" "$HOME/.config/waybar/theme.css"
+ln -sf "$HYPR_THEME"   "$HOME/.config/hypr/theme.conf"
+ln -sf "$KITTY_THEME"  "$HOME/.config/kitty/current-theme.conf"
+
+# Recarrega waybar
+killall waybar 2>/dev/null
+waybar &
+disown
+
+# Recarrega hyprland
+hyprctl reload
+
+# Recarrega kitty (todas as janelas abertas)
+pkill -USR1 kitty 2>/dev/null
+
+# Atualiza flavor do nvim e recarrega instâncias abertas
+echo "$FLAVOR" > "$HOME/.config/nvim/flavor"
+for sock in $(find /run/user/$(id -u) -name 'nvim*' -type s 2>/dev/null); do
+    nvim --server "$sock" --remote-send ":Catppuccin ${FLAVOR}<CR>" 2>/dev/null
+done
+
+echo "Pronto!"

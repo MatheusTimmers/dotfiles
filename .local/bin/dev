@@ -1,0 +1,15 @@
+#!/bin/bash
+# Abre um ambiente de desenvolvimento completo para o projeto especificado.
+# Uso: dev [caminho/do/projeto]
+# Se nenhum caminho for passado, usa o diretório atual.
+
+PROJECT="${1:-$PWD}"
+PROJECT=$(realpath "$PROJECT" 2>/dev/null)
+
+if [ ! -d "$PROJECT" ]; then
+    echo "Erro: diretório não encontrado: $PROJECT"
+    exit 1
+fi
+
+export PROJECT="$PROJECT"
+tmuxifier load-session dev
