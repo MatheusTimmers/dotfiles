@@ -63,6 +63,7 @@ tooltip {
 }
 
 /* === MÓDULOS DIREITA === */
+#custom-aibar,
 #pulseaudio, #backlight, #battery,
 #clock, #tray, #custom-lock, #custom-power {
     padding: 0 12px;
@@ -76,6 +77,7 @@ tooltip {
 #pulseaudio   { color: @mauve; }
 #pulseaudio.muted { color: @overlay; }
 #backlight    { color: @yellow; }
+#custom-aibar { color: @peach; }
 
 #battery      { color: @green; }
 #battery.warning  { color: @yellow; }

@@ -2,6 +2,23 @@
 
 palette = "catppuccin_mocha"
 
+right_format = "$time"
+
+format = """
+$directory\
+$git_branch\
+$git_status\
+$golang\
+$nodejs\
+$python\
+$rust\
+$c\
+$java\
+$lua\
+$cmd_duration\
+$line_break\
+$character"""
+
 [palettes.catppuccin_mocha]
 rosewater = "#f5e0dc"
 flamingo  = "#f2cdcd"
@@ -110,21 +127,6 @@ base      = "#eff1f5"
 mantle    = "#e8ebf0"
 crust     = "#dce0e8"
 
-format = """
-$directory\
-$git_branch\
-$git_status\
-$golang\
-$nodejs\
-$python\
-$rust\
-$c\
-$java\
-$lua\
-$cmd_duration\
-$line_break\
-$character"""
-
 # Diretório — só o nome da pasta atual
 [directory]
 style            = "bold blue"
@@ -197,3 +199,9 @@ format            = "took [$duration]($style) "
 [character]
 success_symbol = "[❯](bold green)"
 error_symbol   = "[❯](bold red)"
+
+[time]
+disabled    = false
+format      = "[$time]($style)"
+time_format = "%H:%M:%S"
+style       = "overlay1"

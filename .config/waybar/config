@@ -5,7 +5,7 @@
 
     "modules-left": ["hyprland/workspaces"],
     "modules-center": ["custom/music"],
-    "modules-right": ["pulseaudio", "backlight", "battery", "clock", "tray", "custom/lock", "custom/power"],
+    "modules-right": ["custom/aibar", "pulseaudio", "backlight", "battery", "clock", "tray", "custom/lock", "custom/power"],
 
     "hyprland/workspaces": {
         "disable-scroll": true,
@@ -27,6 +27,17 @@
         "on-scroll-up": "playerctl next",
         "on-scroll-down": "playerctl previous",
         "max-length": 50
+    },
+
+    "custom/aibar": {
+        "exec": "/home/timmers/.local/bin/ai-usagebar --icon '󰧑 ' --format '{session_pct}%' --color-low '#a6e3a1' --color-mid '#f9e2af' --color-high '#fab387' --color-critical '#f38ba8'",
+        "return-type": "json",
+        "interval": 300,
+        "signal": 13,
+        "tooltip": true,
+        "on-click": "/home/timmers/.local/bin/ai-usagebar-tui",
+        "on-scroll-up": "/home/timmers/.local/bin/ai-usagebar --cycle-next",
+        "on-scroll-down": "/home/timmers/.local/bin/ai-usagebar --cycle-prev"
     },
 
     "clock": {

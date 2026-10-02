@@ -1,13 +1,10 @@
 {
   "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
   "logo": {
-    "type": "kitty",
-    "source": "~/Pictures/unixgirl.jpg",
-    "width": 42,
-    "height": 21,
+    "type": "small",
     "padding": {
-      "top": 0,
-      "right": 2
+      "top": 1,
+      "right": 3
     }
   },
   "display": {
@@ -88,6 +85,11 @@
     {
       "type": "packages",
       "key": "󰏗 "
+    },
+    {
+      "type": "command",
+      "key": "󰪠 ",
+      "text": "cat \"${XDG_CACHE_HOME:-$HOME/.cache}/pkg-updates\" 2>/dev/null || echo '(sem dados ainda)'"
     },
     {
       "type": "custom",

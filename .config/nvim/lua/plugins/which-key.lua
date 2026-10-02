@@ -3,19 +3,22 @@ return {
   event = "VeryLazy",
   opts_extend = { "spec" },
   opts = {
-    defaults = {},
     spec = {
       {
         mode = { "n", "v" },
+        { "<leader>a", group = "ai/claude" },
         { "<leader>c", group = "code" },
-        { "<leader>f", group = "file/find" },
-        { "<leader>g", group = "formating" },
-        { "<leader>s", group = "search" },
+        { "<leader>D", group = "debug" },
+        { "<leader>f", group = "file/find/search" },
+        { "<leader>g", group = "git" },
+        { "<leader>gz", group = "stash" },
+        { "<leader>k", group = "kernel/qemu" },
+        { "<leader>r", group = "refactor/rust" },
+        { "<leader>t", group = "test" },
         { "<leader>x", group = "diagnostics/quickfix", icon = { icon = "󱖫 ", color = "green" } },
         { "[", group = "prev" },
         { "]", group = "next" },
         { "g", group = "goto" },
-        { "gs", group = "surround" },
         { "z", group = "fold" },
         {
           "<leader>b",

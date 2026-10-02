@@ -6,6 +6,6 @@ return {
     "MunifTanjim/nui.nvim",
   },
   config = function()
-    vim.keymap.set('n', '<leader>e', ':Neotree toggle<cr>', {})
+    vim.keymap.set('n', '<leader>e', '<cmd>Neotree toggle<cr>', { desc = "File explorer" })
   end
 }

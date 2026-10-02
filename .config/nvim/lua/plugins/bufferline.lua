@@ -10,6 +10,8 @@ return {
     { "]b",    "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
     { "[B",    "<cmd>BufferLineMovePrev<cr>",  desc = "Move buffer prev" },
     { "]B",    "<cmd>BufferLineMoveNext<cr>",  desc = "Move buffer next" },
+    { "<leader>bl", "<cmd>BufferLineCloseLeft<cr>",  desc = "Close buffers to the left" },
+    { "<leader>br", "<cmd>BufferLineCloseRight<cr>", desc = "Close buffers to the right" },
   },
   config = function()
     vim.opt.termguicolors = true

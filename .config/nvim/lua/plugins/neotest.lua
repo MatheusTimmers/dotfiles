@@ -4,14 +4,14 @@ return {
     "nvim-neotest/nvim-nio",
     "nvim-lua/plenary.nvim",
     "nvim-treesitter/nvim-treesitter",
-    "nvim-neotest/neotest-go",
+    { "fredrikaverpil/neotest-golang", version = "*" },
+    "mrcjkb/rustaceanvim",
   },
   config = function()
     require("neotest").setup({
       adapters = {
-        require("neotest-go")({
-          experimental = { test_table = true },
-        }),
+        require("neotest-golang")({}),
+        require("rustaceanvim.neotest"),
       },
     })
 
@@ -24,7 +24,7 @@ return {
     map("<leader>ts", function() require("neotest").summary.toggle() end,            "Toggle Test Summary")
     map("<leader>to", function() require("neotest").output_panel.toggle() end,       "Toggle Test Output")
     map("<leader>tS", function() require("neotest").run.stop() end,                  "Stop Test")
-    map("]t",         function() require("neotest").jump.next({ status = "failed" }) end, "Next Failed Test")
-    map("[t",         function() require("neotest").jump.prev({ status = "failed" }) end, "Prev Failed Test")
+    map("]T",         function() require("neotest").jump.next({ status = "failed" }) end, "Next Failed Test")
+    map("[T",         function() require("neotest").jump.prev({ status = "failed" }) end, "Prev Failed Test")
   end,
 }

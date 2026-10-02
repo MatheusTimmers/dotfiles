@@ -1,54 +1,63 @@
 #!/bin/bash
-# Troca o flavor do Catppuccin para waybar, hyprland, kitty e nvim
-# Uso: switch-flavor [frappe|macchiato|mocha|latte]
+set -uo pipefail
 
 FLAVOR="${1:-}"
 VALID=(frappe macchiato mocha latte)
 
-if [[ -z "$FLAVOR" ]]; then
-    echo "Uso: switch-flavor <flavor>"
-    echo "Flavors disponíveis: ${VALID[*]}"
+if [[ -z "$FLAVOR" ]] || [[ ! " ${VALID[*]} " =~ " ${FLAVOR} " ]]; then
+    echo "Uso: switch-flavor <${VALID[*]// /|}>"
+    [[ -n "$FLAVOR" ]] && echo "Flavor inválido: '$FLAVOR'"
     exit 1
 fi
 
-if [[ ! " ${VALID[*]} " =~ " ${FLAVOR} " ]]; then
-    echo "Flavor inválido: '$FLAVOR'"
-    echo "Escolha entre: ${VALID[*]}"
-    exit 1
-fi
+case "$FLAVOR" in
+    mocha)     LOW=a6e3a1; MID=f9e2af; HIGH=fab387; CRIT=f38ba8; BAT="Catppuccin Mocha" ;;
+    macchiato) LOW=a6da95; MID=eed49f; HIGH=f5a97f; CRIT=ed8796; BAT="Catppuccin Macchiato" ;;
+    frappe)    LOW=a6d189; MID=e5c890; HIGH=ef9f76; CRIT=e78284; BAT="Catppuccin Frappe" ;;
+    latte)     LOW=40a02b; MID=df8e1d; HIGH=fe640b; CRIT=d20f39; BAT="Catppuccin Latte" ;;
+esac
 
-WAYBAR_THEME="$HOME/.config/waybar/themes/${FLAVOR}.css"
-HYPR_THEME="$HOME/.config/hypr/themes/${FLAVOR}.conf"
-KITTY_THEME="$HOME/.config/kitty/themes/${FLAVOR}.conf"
+C="$HOME/.config"
+declare -A LINKS=(
+    ["$C/waybar/themes/${FLAVOR}.css"]="$C/waybar/theme.css"
+    ["$C/hypr/themes/${FLAVOR}.conf"]="$C/hypr/theme.conf"
+    ["$C/hypr/themes-lock/${FLAVOR}.conf"]="$C/hypr/lock-theme.conf"
+    ["$C/kitty/themes/${FLAVOR}.conf"]="$C/kitty/current-theme.conf"
+    ["$C/mako/themes/${FLAVOR}"]="$C/mako/theme"
+)
 
-for f in "$WAYBAR_THEME" "$HYPR_THEME" "$KITTY_THEME"; do
-    if [[ ! -f "$f" ]]; then
-        echo "Arquivo não encontrado: $f"
-        exit 1
-    fi
+for src in "${!LINKS[@]}"; do
+    [[ -f "$src" ]] || { echo "Arquivo não encontrado: $src"; exit 1; }
 done
 
 echo "Aplicando flavor: $FLAVOR"
 
-# Atualiza symlinks
-ln -sf "$WAYBAR_THEME" "$HOME/.config/waybar/theme.css"
-ln -sf "$HYPR_THEME"   "$HOME/.config/hypr/theme.conf"
-ln -sf "$KITTY_THEME"  "$HOME/.config/kitty/current-theme.conf"
+for src in "${!LINKS[@]}"; do
+    ln -sf "$src" "${LINKS[$src]}"
+done
 
-# Recarrega waybar
+sed -i "s/^palette = \"catppuccin_.*\"/palette = \"catppuccin_${FLAVOR}\"/" "$C/starship.toml"
+sed -i "s/^color_theme = .*/color_theme = \"catppuccin_${FLAVOR}\"/" "$C/btop/btop.conf"
+sed -i "s/^set -g @catppuccin_flavor .*/set -g @catppuccin_flavor \"${FLAVOR}\"/" "$C/tmux/tmux.conf"
+sed -i "s/syntax-theme = Catppuccin .*/syntax-theme = ${BAT}/" "$HOME/.gitconfig"
+printf '%s\n' "--theme=\"${BAT}\"" > "$C/bat/config"
+sed -i "s/--color-low '#[0-9a-f]\{6\}'/--color-low '#${LOW}'/;
+        s/--color-mid '#[0-9a-f]\{6\}'/--color-mid '#${MID}'/;
+        s/--color-high '#[0-9a-f]\{6\}'/--color-high '#${HIGH}'/;
+        s/--color-critical '#[0-9a-f]\{6\}'/--color-critical '#${CRIT}'/" "$C/waybar/config"
+
+echo "$FLAVOR" > "$C/nvim/flavor"
+
 killall waybar 2>/dev/null
-waybar &
+setsid waybar >/dev/null 2>&1 &
 disown
 
-# Recarrega hyprland
-hyprctl reload
-
-# Recarrega kitty (todas as janelas abertas)
+hyprctl reload >/dev/null
 pkill -USR1 kitty 2>/dev/null
+pgrep -x mako >/dev/null && makoctl reload
+tmux info &>/dev/null && tmux source-file "$C/tmux/tmux.conf" 2>/dev/null
 
-# Atualiza flavor do nvim e recarrega instâncias abertas
-echo "$FLAVOR" > "$HOME/.config/nvim/flavor"
-for sock in $(find /run/user/$(id -u) -name 'nvim*' -type s 2>/dev/null); do
+for sock in $(find "/run/user/$(id -u)" -name 'nvim*' -type s 2>/dev/null); do
     nvim --server "$sock" --remote-send ":Catppuccin ${FLAVOR}<CR>" 2>/dev/null
 done
 

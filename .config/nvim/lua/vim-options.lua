@@ -16,3 +16,6 @@ vim.opt.clipboard:append { 'unnamedplus' }
 
 vim.opt.encoding = "utf-8"
 vim.opt.fileencoding = "utf-8"
+
+vim.keymap.set("n", "<A-Left>",  "<C-o>", { desc = "Jump back" })
+vim.keymap.set("n", "<A-Right>", "<C-i>", { desc = "Jump forward" })
