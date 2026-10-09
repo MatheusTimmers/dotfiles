@@ -8,17 +8,25 @@ return {
     local ts = require("nvim-treesitter")
     ts.setup()
 
-    -- No main nao existe auto_install: os parsers sao pedidos explicitamente.
-    -- E no-op para os que ja estao instalados.
-    ts.install({
-      "arduino", "asm", "bash", "c", "c_sharp", "cmake", "cpp", "css", "desktop",
-      "disassembly",
-      "git_config", "gitcommit", "gitignore", "go", "gomod", "gosum", "html",
-      "hyprlang", "java", "json", "latex", "linkerscript", "lua", "make",
-      "markdown", "markdown_inline", "po", "python", "ruby", "rust",
-      "systemverilog", "tcl", "toml", "tsx", "typescript", "vim", "vimdoc",
-      "xml", "yaml",
-    })
+    if vim.fn.has("win32") == 1 then
+      if not vim.env.CC and vim.fn.executable("gcc") == 1 then
+        vim.env.CC = "gcc"
+      end
+      ts.install({
+        "bash", "json", "lua", "markdown", "markdown_inline", "pascal", "powershell",
+        "query", "sql", "toml", "vim", "vimdoc", "xml", "yaml",
+      })
+    else
+      ts.install({
+        "arduino", "asm", "bash", "c", "c_sharp", "cmake", "cpp", "css", "desktop",
+        "disassembly",
+        "git_config", "gitcommit", "gitignore", "go", "gomod", "gosum", "html",
+        "hyprlang", "java", "json", "latex", "linkerscript", "lua", "make",
+        "markdown", "markdown_inline", "pascal", "po", "python", "ruby", "rust",
+        "systemverilog", "tcl", "toml", "tsx", "typescript", "vim", "vimdoc",
+        "xml", "yaml",
+      })
+    end
 
     -- So existe parser de systemverilog (a gramatica cobre IEEE 1800 inteiro),
     -- e o filetype de .v e "verilog": sem o alias, arquivos .v ficam sem realce.

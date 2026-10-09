@@ -1,3 +1,5 @@
+local windows = vim.fn.has("win32") == 1
+
 return {
 	{
 		"mason-org/mason.nvim",
@@ -6,7 +8,9 @@ return {
 
 			local registry = require("mason-registry")
 			registry.refresh(function()
-				for _, name in ipairs({ "stylua", "clang-format", "gofumpt", "goimports", "gomodifytags", "impl" }) do
+				local tools = windows and { "stylua" }
+					or { "stylua", "clang-format", "gofumpt", "goimports", "gomodifytags", "impl" }
+				for _, name in ipairs(tools) do
 					local ok, pkg = pcall(registry.get_package, name)
 					if ok and not pkg:is_installed() then
 						pkg:install()
@@ -20,7 +24,8 @@ return {
 		dependencies = { "mason-org/mason.nvim", "neovim/nvim-lspconfig" },
 		config = function()
 			require("mason-lspconfig").setup({
-				ensure_installed = { "lua_ls", "gopls", "clangd", "ts_ls", "vhdl_ls", "verible", "texlab", "omnisharp" },
+				ensure_installed = windows and { "lua_ls" }
+					or { "lua_ls", "gopls", "clangd", "ts_ls", "vhdl_ls", "verible", "texlab", "omnisharp" },
 				automatic_enable = { exclude = { "rust_analyzer" } },
 			})
 		end,
