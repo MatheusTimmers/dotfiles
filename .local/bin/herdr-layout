@@ -1,0 +1,97 @@
+#!/bin/bash
+set -euo pipefail
+export PATH="$HOME/.local/share/mise/shims:$HOME/.local/bin:$PATH"
+
+h() { herdr "$@"; }
+
+existing_workspace() {
+    h workspace list | jq -r --arg l "$1" '.result.workspaces[] | select(.label == $l) | .workspace_id' | head -n1
+}
+
+new_workspace() {
+    local label=$1 cwd=$2 tab_label=$3 out
+    out=$(h workspace create --cwd "$cwd" --label "$label" --no-focus)
+    WS=$(jq -r '.result.workspace.workspace_id' <<<"$out")
+    TAB=$(jq -r '.result.tab.tab_id' <<<"$out")
+    PANE=$(jq -r '.result.root_pane.pane_id' <<<"$out")
+    h tab rename "$TAB" "$tab_label" >/dev/null
+}
+
+new_tab() {
+    local cwd=$1 label=$2 out
+    out=$(h tab create --workspace "$WS" --cwd "$cwd" --label "$label")
+    TAB=$(jq -r '.result.tab.tab_id' <<<"$out")
+    PANE=$(jq -r '.result.root_pane.pane_id' <<<"$out")
+}
+
+split_down() {
+    local cwd=$1 ratio=$2
+    h pane split "$PANE" --direction down --ratio "$ratio" --cwd "$cwd" | jq -r '.result.pane.pane_id'
+}
+
+run() { h pane run "$1" "$2" >/dev/null; }
+
+layout_dev() {
+    local project label
+    project=$(realpath "${1:-$PWD}")
+    [[ -d "$project" ]] || { echo "Diretório não encontrado: $project" >&2; exit 1; }
+    label=$(basename "$project")
+    WS=$(existing_workspace "$label")
+    [[ -n "$WS" ]] && return
+    new_workspace "$label" "$project" "terminal"
+    new_tab "$project" "nvim"
+    run "$PANE" "nvim ."
+    local nvim_tab=$TAB
+    new_tab "$project" "claude"
+    run "$PANE" "sleep 3 && claude --ide"
+    h tab focus "$nvim_tab" >/dev/null
+}
+
+layout_code() {
+    WS=$(existing_workspace "code")
+    [[ -n "$WS" ]] && return
+    new_workspace "code" "$HOME/Projects" "nvim"
+    run "$PANE" "nvim"
+    local first_tab=$TAB
+    new_tab "$HOME/Projects" "terminal"
+    h tab focus "$first_tab" >/dev/null
+}
+
+layout_ormacarbon() {
+    local back="$HOME/Projects/ormacarbon/backend" front="$HOME/Projects/ormacarbon/frontend"
+    WS=$(existing_workspace "ormacarbon")
+    [[ -n "$WS" ]] && return
+    new_workspace "ormacarbon" "$back" "code-api"
+    local first_tab=$TAB bottom
+    bottom=$(split_down "$back" 0.8)
+    run "$PANE" "nvim ."
+    run "$bottom" "source ./env.env && go run cmd/api/main.go"
+    new_tab "$back" "banco"
+    run "$PANE" "psql -U ormacarbon_app -d ormacarbon"
+    sleep 1
+    run "$PANE" "admin"
+    new_tab "$front" "front-api"
+    bottom=$(split_down "$front" 0.8)
+    run "$PANE" "nvim ."
+    run "$bottom" "npm run dev"
+    h tab focus "$first_tab" >/dev/null
+}
+
+pending="${XDG_CACHE_HOME:-$HOME/.cache}/herdr-layout-pending"
+
+if [[ -z "${HERDR_ENV:-}" ]] && ! herdr workspace list >/dev/null 2>&1; then
+    [[ "${1:-}" == dev ]] && set -- dev "$(realpath "${2:-$PWD}")"
+    mkdir -p "$(dirname "$pending")"
+    printf '%q ' "$@" > "$pending"
+    exec herdr
+fi
+
+case "${1:-}" in
+    dev)        shift; layout_dev "$@" ;;
+    code)       layout_code ;;
+    ormacarbon) layout_ormacarbon ;;
+    *) echo "Uso: herdr-layout <dev [caminho]|code|ormacarbon>" >&2; exit 1 ;;
+esac
+
+h workspace focus "$WS" >/dev/null
+[[ -n "${HERDR_ENV:-}" ]] || exec herdr

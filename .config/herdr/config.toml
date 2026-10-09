@@ -1,0 +1,29 @@
+onboarding = false
+
+[theme]
+name = "catppuccin"
+
+auto_switch = false
+[terminal]
+shell_mode = "login"
+new_cwd = "follow"
+
+[keys]
+prefix = "ctrl+s"
+split_vertical = ["prefix+|", "prefix+shift+backslash", "prefix+v"]
+split_horizontal = "prefix+minus"
+new_tab = "prefix+c"
+navigate_workspace_up = ["up", "k"]
+navigate_workspace_down = ["down", "j"]
+navigate_pane_up = "shift+k"
+navigate_pane_down = "shift+j"
+
+[ui]
+accent = "#cba6f7"
+tab_bar_position = "top"
+tab_bar_right = [
+  { type = "datetime", format = "%H:%M  %d/%m" },
+]
+
+[ui.toast]
+delivery = "system"

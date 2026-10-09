@@ -1,12 +1,12 @@
 return {
 	{
-		"williamboman/mason.nvim",
+		"mason-org/mason.nvim",
 		config = function()
 			require("mason").setup()
 
 			local registry = require("mason-registry")
 			registry.refresh(function()
-				for _, name in ipairs({ "stylua", "clang-format", "gofumpt", "goimports" }) do
+				for _, name in ipairs({ "stylua", "clang-format", "gofumpt", "goimports", "gomodifytags", "impl" }) do
 					local ok, pkg = pcall(registry.get_package, name)
 					if ok and not pkg:is_installed() then
 						pkg:install()
@@ -16,8 +16,8 @@ return {
 		end,
 	},
 	{
-		"williamboman/mason-lspconfig.nvim",
-		dependencies = { "williamboman/mason.nvim", "neovim/nvim-lspconfig" },
+		"mason-org/mason-lspconfig.nvim",
+		dependencies = { "mason-org/mason.nvim", "neovim/nvim-lspconfig" },
 		config = function()
 			require("mason-lspconfig").setup({
 				ensure_installed = { "lua_ls", "gopls", "clangd", "ts_ls", "vhdl_ls", "verible", "texlab", "omnisharp" },
@@ -27,11 +27,10 @@ return {
 	},
 	{
 		"neovim/nvim-lspconfig",
+		dependencies = { "saghen/blink.cmp" },
 		config = function()
-			-- vim.lsp.config faz merge por cima do lsp/<nome>.lua do nvim-lspconfig,
-			-- entao aqui so vai o que difere do padrao.
 			vim.lsp.config("*", {
-				capabilities = require("cmp_nvim_lsp").default_capabilities(),
+				capabilities = require("blink.cmp").get_lsp_capabilities(),
 			})
 
 			vim.lsp.config("lua_ls", {
@@ -111,6 +110,7 @@ return {
 			-- push (publishDiagnostics) e pull (textDocument/diagnostic). Cada um
 			-- cai num namespace proprio do Neovim, entao tudo aparecia em dobro.
 			vim.lsp.config("verible", {
+				cmd = { "verible-verilog-ls", "--lsp_enable_hover" },
 				on_attach = function(client)
 					client.server_capabilities.diagnosticProvider = nil
 				end,

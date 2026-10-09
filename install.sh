@@ -41,33 +41,20 @@ echo "Dotfiles installer"
 echo "Repo: $DOTFILES"
 echo ""
 
-# Shell
 link .zshrc
-
-# Hyprland
 link .config/hypr
-
-# Terminal
 link .config/kitty
-
-# Tmux
-link .config/tmux
-
-# Neovim
+link .config/herdr/config.toml
 link .config/nvim
-
-# Waybar
 link .config/waybar
-
-# Fastfetch
 link .config/fastfetch
-
-# Starship
+link .config/fuzzel
+link .config/mako
+link .config/satty
 link .config/starship.toml
-
-# Scripts
 link .local/bin/switch-flavor
 link .local/bin/dev
+link .local/bin/herdr-layout
 
 echo ""
 if [ -d "$BACKUP_DIR" ]; then

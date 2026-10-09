@@ -15,7 +15,7 @@ return {
       "disassembly",
       "git_config", "gitcommit", "gitignore", "go", "gomod", "gosum", "html",
       "hyprlang", "java", "json", "latex", "linkerscript", "lua", "make",
-      "markdown", "markdown_inline", "pascal", "po", "python", "ruby", "rust",
+      "markdown", "markdown_inline", "po", "python", "ruby", "rust",
       "systemverilog", "tcl", "toml", "tsx", "typescript", "vim", "vimdoc",
       "xml", "yaml",
     })

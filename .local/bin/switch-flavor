@@ -11,10 +11,10 @@ if [[ -z "$FLAVOR" ]] || [[ ! " ${VALID[*]} " =~ " ${FLAVOR} " ]]; then
 fi
 
 case "$FLAVOR" in
-    mocha)     LOW=a6e3a1; MID=f9e2af; HIGH=fab387; CRIT=f38ba8; BAT="Catppuccin Mocha" ;;
-    macchiato) LOW=a6da95; MID=eed49f; HIGH=f5a97f; CRIT=ed8796; BAT="Catppuccin Macchiato" ;;
-    frappe)    LOW=a6d189; MID=e5c890; HIGH=ef9f76; CRIT=e78284; BAT="Catppuccin Frappe" ;;
-    latte)     LOW=40a02b; MID=df8e1d; HIGH=fe640b; CRIT=d20f39; BAT="Catppuccin Latte" ;;
+    mocha)     LOW=a6e3a1; MID=f9e2af; HIGH=fab387; CRIT=f38ba8; BAT="Catppuccin Mocha"; MAUVE=cba6f7; HERDR=catppuccin ;;
+    macchiato) LOW=a6da95; MID=eed49f; HIGH=f5a97f; CRIT=ed8796; BAT="Catppuccin Macchiato"; MAUVE=c6a0f6; HERDR=catppuccin ;;
+    frappe)    LOW=a6d189; MID=e5c890; HIGH=ef9f76; CRIT=e78284; BAT="Catppuccin Frappe"; MAUVE=ca9ee6; HERDR=catppuccin ;;
+    latte)     LOW=40a02b; MID=df8e1d; HIGH=fe640b; CRIT=d20f39; BAT="Catppuccin Latte"; MAUVE=8839ef; HERDR=catppuccin-latte ;;
 esac
 
 C="$HOME/.config"
@@ -24,6 +24,7 @@ declare -A LINKS=(
     ["$C/hypr/themes-lock/${FLAVOR}.conf"]="$C/hypr/lock-theme.conf"
     ["$C/kitty/themes/${FLAVOR}.conf"]="$C/kitty/current-theme.conf"
     ["$C/mako/themes/${FLAVOR}"]="$C/mako/theme"
+    ["$C/fuzzel/themes/${FLAVOR}.ini"]="$C/fuzzel/theme.ini"
 )
 
 for src in "${!LINKS[@]}"; do
@@ -38,7 +39,7 @@ done
 
 sed -i "s/^palette = \"catppuccin_.*\"/palette = \"catppuccin_${FLAVOR}\"/" "$C/starship.toml"
 sed -i "s/^color_theme = .*/color_theme = \"catppuccin_${FLAVOR}\"/" "$C/btop/btop.conf"
-sed -i "s/^set -g @catppuccin_flavor .*/set -g @catppuccin_flavor \"${FLAVOR}\"/" "$C/tmux/tmux.conf"
+sed -i "s/^name = .*/name = \"${HERDR}\"/; s/^accent = .*/accent = \"#${MAUVE}\"/" "$C/herdr/config.toml"
 sed -i "s/syntax-theme = Catppuccin .*/syntax-theme = ${BAT}/" "$HOME/.gitconfig"
 printf '%s\n' "--theme=\"${BAT}\"" > "$C/bat/config"
 sed -i "s/--color-low '#[0-9a-f]\{6\}'/--color-low '#${LOW}'/;
@@ -55,7 +56,7 @@ disown
 hyprctl reload >/dev/null
 pkill -USR1 kitty 2>/dev/null
 pgrep -x mako >/dev/null && makoctl reload
-tmux info &>/dev/null && tmux source-file "$C/tmux/tmux.conf" 2>/dev/null
+herdr server reload-config >/dev/null 2>&1
 
 for sock in $(find "/run/user/$(id -u)" -name 'nvim*' -type s 2>/dev/null); do
     nvim --server "$sock" --remote-send ":Catppuccin ${FLAVOR}<CR>" 2>/dev/null

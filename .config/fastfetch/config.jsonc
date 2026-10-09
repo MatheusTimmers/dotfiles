@@ -84,7 +84,8 @@
     },
     {
       "type": "packages",
-      "key": "󰏗 "
+      "key": "󰏗 ",
+      "format": "{rpm} rpm · {flatpak-all} flatpak · {brew-all} brew · {snap} snap"
     },
     {
       "type": "command",

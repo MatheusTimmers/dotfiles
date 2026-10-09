@@ -1,3 +1,12 @@
+fastfetch() {
+    if [[ $# -eq 0 && "$TERM" == xterm-kitty && -z "$HERDR_ENV" && $COLUMNS -ge 100 ]]; then
+        clear
+        kitten icat -n --place 40x20@1x2 --scale-up --align left ~/.config/fastfetch/moon.gif \
+            | command fastfetch --logo-type raw --logo - --logo-width 42 --logo-height 20
+    else
+        command fastfetch "$@"
+    fi
+}
 fastfetch
 
 HISTFILE=~/.histfile
@@ -11,12 +20,7 @@ setopt HIST_REDUCE_BLANKS
 setopt HIST_VERIFY
 bindkey -e
 
-# Atualização do PATH consolidada
-export PATH=$PATH:/home/timmers/.local/bin:/home/timmers/.config/tmux/plugins/tmuxifier/bin
-
-# Inicialização do tmuxifier
-export TMUXIFIER_LAYOUT_PATH="$HOME/.config/tmux/layouts"
-eval "$(tmuxifier init -)"
+export PATH=$PATH:/home/timmers/.local/bin
 
 # Inicialização do Starship como prompt
 eval "$(starship init zsh)"
@@ -27,8 +31,6 @@ command -v fzf >/dev/null && source <(fzf --zsh)
 # Aliases
 alias ls='eza --icons --group-directories-first'
 alias cat="bat --style=auto"
-alias tmuxa="tmux attach -f ~/.config/tmux/tmux.conf"
-alias tmux="tmux -f ~/.config/tmux/tmux.conf"
 alias icat="kitty +kitten icat"
 [[ "$TERM" == "xterm-kitty" ]] && alias ssh="kitten ssh"
 
@@ -64,3 +66,13 @@ eval "$(~/.local/bin/mise activate zsh)"
 # eval "$(oh-my-posh init zsh --config $HOME/.config/ohmyposh/catppuccin_frappe.json)"
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+if [[ -n "$HERDR_ENV" && -f "${XDG_CACHE_HOME:-$HOME/.cache}/herdr-layout-pending" ]]; then
+    () {
+        local pending="${XDG_CACHE_HOME:-$HOME/.cache}/herdr-layout-pending"
+        mv "$pending" "$pending.$$" 2>/dev/null || return
+        local args=$(<"$pending.$$")
+        rm -f "$pending.$$"
+        eval "herdr-layout $args"
+    }
+fi

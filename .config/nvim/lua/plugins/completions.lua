@@ -1,45 +1,40 @@
 return {
-  { "hrsh7th/cmp-nvim-lsp" },
-  { "hrsh7th/cmp-path" },
-  { "hrsh7th/cmp-buffer" },
   {
     "L3MON4D3/LuaSnip",
-    dependencies = {
-      "saadparwaiz1/cmp_luasnip",
-      "rafamadriz/friendly-snippets"
-    }
+    version = "v2.*",
+    dependencies = { "rafamadriz/friendly-snippets" },
+    config = function()
+      require("luasnip.loaders.from_vscode").lazy_load()
+    end,
   },
   {
-    "hrsh7th/nvim-cmp",
-    config = function()
-      local cmp = require 'cmp'
-      require("luasnip.loaders.from_vscode").lazy_load()
-
-      cmp.setup({
-        snippet = {
-          expand = function(args)
-            require('luasnip').lsp_expand(args.body)
-          end,
+    "saghen/blink.cmp",
+    version = "1.*",
+    event = { "InsertEnter", "CmdlineEnter" },
+    dependencies = { "L3MON4D3/LuaSnip" },
+    opts = {
+      keymap = {
+        preset = "enter",
+        ["<C-b>"] = { "scroll_documentation_up", "fallback" },
+        ["<C-f>"] = { "scroll_documentation_down", "fallback" },
+      },
+      snippets = { preset = "luasnip" },
+      appearance = { nerd_font_variant = "mono" },
+      completion = {
+        list = { selection = { preselect = true, auto_insert = false } },
+        menu = { border = "rounded", draw = { treesitter = { "lsp" } } },
+        documentation = { auto_show = true, auto_show_delay_ms = 200, window = { border = "rounded" } },
+        ghost_text = { enabled = true },
+      },
+      signature = { enabled = true, window = { border = "rounded" } },
+      sources = {
+        default = { "lazydev", "lsp", "path", "snippets", "buffer" },
+        providers = {
+          lazydev = { name = "LazyDev", module = "lazydev.integrations.blink", score_offset = 100 },
         },
-        window = {
-          completion = cmp.config.window.bordered(),
-          documentation = cmp.config.window.bordered(),
-        },
-        mapping = cmp.mapping.preset.insert({
-          ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-          ['<C-f>'] = cmp.mapping.scroll_docs(4),
-          ['<C-Space>'] = cmp.mapping.complete(),
-          ['<C-e>'] = cmp.mapping.abort(),
-          ['<CR>'] = cmp.mapping.confirm({ select = true }),
-        }),
-        sources = cmp.config.sources({
-          { name = 'nvim_lsp' },
-          { name = 'luasnip' },
-          { name = 'path' },
-        }, {
-          { name = 'buffer' },
-        })
-      })
-    end,
-  }
+      },
+      fuzzy = { implementation = "prefer_rust_with_warning" },
+    },
+    opts_extend = { "sources.default" },
+  },
 }

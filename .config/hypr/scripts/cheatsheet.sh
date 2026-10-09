@@ -11,8 +11,11 @@ parse() {
         rest="$(echo "${rest:-}" | xargs)"
         [[ -z "$key" ]] && continue
         combo="${mod:+$mod + }$key"
-        printf '%-28s  %s\n' "$combo" "$action${rest:+ $rest}"
+        desc="$action${rest:+ $rest}"
+        desc="${desc#exec }"
+        desc="${desc//\~\/.config\/hypr\/scripts\//}"
+        printf '%-26s  %s\n' "$combo" "$desc"
     done
 }
 
-parse | sort -u | wofi --dmenu --prompt "Atalhos" --width 700 --height 600 >/dev/null
+parse | sort -u | fuzzel --dmenu --prompt "Atalhos ❯ " --width 90 --lines 20 >/dev/null

@@ -55,12 +55,15 @@ return {
     version = "^9",
     lazy = false,
     init = function()
-      vim.g.rustaceanvim = {
-        server = {
-          on_attach = on_attach,
-          settings = settings,
-        },
-      }
+      vim.g.rustaceanvim = function()
+        return {
+          server = {
+            on_attach = on_attach,
+            settings = settings,
+            capabilities = require("blink.cmp").get_lsp_capabilities(),
+          },
+        }
+      end
     end,
   },
 }
