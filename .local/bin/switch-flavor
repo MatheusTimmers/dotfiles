@@ -37,12 +37,12 @@ for src in "${!LINKS[@]}"; do
     ln -sf "$src" "${LINKS[$src]}"
 done
 
-sed -i "s/^palette = \"catppuccin_.*\"/palette = \"catppuccin_${FLAVOR}\"/" "$C/starship.toml"
-sed -i "s/^color_theme = .*/color_theme = \"catppuccin_${FLAVOR}\"/" "$C/btop/btop.conf"
-sed -i "s/^name = .*/name = \"${HERDR}\"/; s/^accent = .*/accent = \"#${MAUVE}\"/" "$C/herdr/config.toml"
-sed -i "s/syntax-theme = Catppuccin .*/syntax-theme = ${BAT}/" "$HOME/.gitconfig"
+sed -i --follow-symlinks "s/^palette = \"catppuccin_.*\"/palette = \"catppuccin_${FLAVOR}\"/" "$C/starship.toml"
+sed -i --follow-symlinks "s/^color_theme = .*/color_theme = \"catppuccin_${FLAVOR}\"/" "$C/btop/btop.conf"
+sed -i --follow-symlinks "s/^name = .*/name = \"${HERDR}\"/; s/^accent = .*/accent = \"#${MAUVE}\"/" "$C/herdr/config.toml"
+sed -i --follow-symlinks "s/syntax-theme = Catppuccin .*/syntax-theme = ${BAT}/" "$HOME/.gitconfig"
 printf '%s\n' "--theme=\"${BAT}\"" > "$C/bat/config"
-sed -i "s/--color-low '#[0-9a-f]\{6\}'/--color-low '#${LOW}'/;
+sed -i --follow-symlinks "s/--color-low '#[0-9a-f]\{6\}'/--color-low '#${LOW}'/;
         s/--color-mid '#[0-9a-f]\{6\}'/--color-mid '#${MID}'/;
         s/--color-high '#[0-9a-f]\{6\}'/--color-high '#${HIGH}'/;
         s/--color-critical '#[0-9a-f]\{6\}'/--color-critical '#${CRIT}'/" "$C/waybar/config"
