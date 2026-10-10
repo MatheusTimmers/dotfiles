@@ -27,3 +27,12 @@ tab_bar_right = [
 
 [ui.toast]
 delivery = "system"
+
+[[keys.command]]
+key = "prefix+m"
+type = "plugin_action"
+command = "wmonit.open"
+description = "wmonit"
+
+[ui.sidebar.spaces]
+rows = [["state_icon", "workspace"], ["branch", "git_status"], ["$wm_jira", "$wm_mr", "$wm_ci"], ["$wm_todo"]]
