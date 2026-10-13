@@ -18,4 +18,4 @@ parse() {
     done
 }
 
-parse | sort -u | fuzzel --dmenu --prompt "Atalhos ❯ " --width 90 --lines 20 >/dev/null
+parse | sort -u | fuzzel --dmenu --prompt "keys: " --width 90 --lines 20 >/dev/null

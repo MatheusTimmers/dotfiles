@@ -1,7 +1,7 @@
 fastfetch() {
     if [[ $# -eq 0 && "$TERM" == xterm-kitty && -z "$HERDR_ENV" && $COLUMNS -ge 100 ]]; then
         clear
-        kitten icat -n --place 40x20@1x2 --scale-up --align left ~/.config/fastfetch/moon.gif \
+        kitten icat -n --place 40x20@1x2 --scale-up --align left ~/.config/fastfetch/patch-"$(cat ~/.config/quickshell/flavor 2>/dev/null || echo mocha)".png \
             | command fastfetch --logo-type raw --logo - --logo-width 42 --logo-height 20
     else
         command fastfetch "$@"

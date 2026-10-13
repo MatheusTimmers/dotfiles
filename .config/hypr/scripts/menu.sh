@@ -3,17 +3,19 @@ export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
 S="$HOME/.config/hypr/scripts"
 
 pick() {
-    printf '%s\n' "$@" | fuzzel --dmenu --prompt "❯ " --lines "$#"
+    local prompt=$1
+    shift
+    printf '%s\n' "$@" | fuzzel --dmenu --prompt "$prompt" --lines "$#"
 }
 
 theme() {
     local flavor
-    flavor=$(pick mocha macchiato frappe latte) || exit 0
+    flavor=$(pick "theme: " mocha macchiato frappe latte) || exit 0
     switch-flavor "$flavor" >/dev/null
 }
 
 record() {
-    case $(pick "󰹑  Tela" "󰆞  Região" "󰹑  Tela com áudio" "󰆞  Região com áudio") in
+    case $(pick "rec: " "󰹑  Tela" "󰆞  Região" "󰹑  Tela com áudio" "󰆞  Região com áudio") in
         *"Tela com áudio")   "$S/screenrecord.sh" screen audio ;;
         *"Região com áudio") "$S/screenrecord.sh" region audio ;;
         *Tela)               "$S/screenrecord.sh" screen ;;
@@ -22,19 +24,21 @@ record() {
 }
 
 power() {
-    case $(pick "󰌾  Bloquear" "󰤄  Suspender" "󰍃  Sair" "󰜉  Reiniciar" "󰐥  Desligar") in
-        *Bloquear)  loginctl lock-session ;;
-        *Suspender) systemctl suspend ;;
-        *Sair)      hyprctl dispatch exit ;;
-        *Reiniciar) systemctl reboot ;;
-        *Desligar)  systemctl poweroff ;;
+    case $(pick "power: " "> bloquear" "> suspender" "> sair" "> reiniciar" "> desligar") in
+        *bloquear)  "$S/lock.sh" ;;
+        *suspender) systemctl suspend ;;
+        *sair)      hyprctl dispatch exit ;;
+        *reiniciar) systemctl reboot ;;
+        *desligar)  systemctl poweroff ;;
     esac
 }
+
+[[ ${1:-} == power ]] && { power; exit 0; }
 
 rec_label="󰻃  Gravar tela"
 pgrep -x wf-recorder >/dev/null && rec_label="󰓛  Parar gravação"
 
-case $(pick \
+case $(pick "menu: " \
     "󰹑  Screenshot" \
     "$rec_label" \
     "󰖔  Luz noturna" \

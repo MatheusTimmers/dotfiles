@@ -1,13 +1,17 @@
-background-color=#1e2030
+background-color=#181926
 text-color=#cad3f5
-border-color=#c6a0f6
+border-color=#eed49f
 progress-color=over #363a4f
+format=<span size="small" letter_spacing="2048" text_transform="uppercase" foreground="#eed49f">%a</span>\n<b>%s</b>\n%b
 
 [urgency=low]
-border-color=#8bd5ca
+on-notify=none
+border-color=#6e738d
+format=<span size="small" letter_spacing="2048" text_transform="uppercase" foreground="#6e738d">%a</span>\n<b>%s</b>\n%b
 default-timeout=3000
 
 [urgency=critical]
 border-color=#ed8796
 text-color=#ed8796
+format=<span size="small" letter_spacing="2048" text_transform="uppercase" foreground="#ed8796">  %a</span>\n<b>%s</b>\n%b
 default-timeout=0
