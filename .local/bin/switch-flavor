@@ -48,6 +48,7 @@ sed -i --follow-symlinks "s/--color-low '#[0-9a-f]\{6\}'/--color-low '#${LOW}'/;
         s/--color-critical '#[0-9a-f]\{6\}'/--color-critical '#${CRIT}'/" "$C/waybar/config"
 
 echo "$FLAVOR" > "$C/nvim/flavor"
+echo "$FLAVOR" > "$C/quickshell/flavor"
 
 killall waybar 2>/dev/null
 setsid waybar >/dev/null 2>&1 &

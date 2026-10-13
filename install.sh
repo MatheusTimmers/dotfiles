@@ -50,6 +50,7 @@ link .config/waybar
 link .config/fastfetch
 link .config/fuzzel
 link .config/mako
+link .config/quickshell
 link .config/satty
 link .config/starship.toml
 link .local/bin/switch-flavor
