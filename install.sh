@@ -46,7 +46,6 @@ link .config/hypr
 link .config/kitty
 link .config/herdr/config.toml
 link .config/nvim
-link .config/waybar
 link .config/fastfetch
 link .config/fuzzel
 link .config/mako

@@ -38,6 +38,7 @@ Singleton {
     readonly property var colors: palettes[flavor]
     readonly property var accents: ["blue", "mauve", "pink", "green", "yellow", "red", "teal", "sky", "sapphire", "peach"]
     readonly property string font: "Hack Nerd Font"
+    readonly property string sans: "Adwaita Sans"
 
     FileView {
         path: Quickshell.shellPath("flavor")

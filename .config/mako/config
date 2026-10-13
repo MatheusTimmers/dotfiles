@@ -14,3 +14,7 @@ default-timeout=5000
 ignore-timeout=1
 on-notify=exec pw-play ~/.config/mako/quindar.wav
 include=~/.config/mako/theme
+
+[mode=do-not-disturb]
+on-notify=none
+invisible=1

@@ -11,15 +11,14 @@ if [[ -z "$FLAVOR" ]] || [[ ! " ${VALID[*]} " =~ " ${FLAVOR} " ]]; then
 fi
 
 case "$FLAVOR" in
-    mocha)     LOW=a6e3a1; MID=f9e2af; HIGH=fab387; CRIT=f38ba8; BAT="Catppuccin Mocha"; MAUVE=cba6f7; HERDR=catppuccin ;;
-    macchiato) LOW=a6da95; MID=eed49f; HIGH=f5a97f; CRIT=ed8796; BAT="Catppuccin Macchiato"; MAUVE=c6a0f6; HERDR=catppuccin ;;
-    frappe)    LOW=a6d189; MID=e5c890; HIGH=ef9f76; CRIT=e78284; BAT="Catppuccin Frappe"; MAUVE=ca9ee6; HERDR=catppuccin ;;
-    latte)     LOW=40a02b; MID=df8e1d; HIGH=fe640b; CRIT=d20f39; BAT="Catppuccin Latte"; MAUVE=8839ef; HERDR=catppuccin-latte ;;
+    mocha)     BAT="Catppuccin Mocha"; MAUVE=cba6f7; HERDR=catppuccin ;;
+    macchiato) BAT="Catppuccin Macchiato"; MAUVE=c6a0f6; HERDR=catppuccin ;;
+    frappe)    BAT="Catppuccin Frappe"; MAUVE=ca9ee6; HERDR=catppuccin ;;
+    latte)     BAT="Catppuccin Latte"; MAUVE=8839ef; HERDR=catppuccin-latte ;;
 esac
 
 C="$HOME/.config"
 declare -A LINKS=(
-    ["$C/waybar/themes/${FLAVOR}.css"]="$C/waybar/theme.css"
     ["$C/hypr/themes/${FLAVOR}.conf"]="$C/hypr/theme.conf"
     ["$C/hypr/themes-lock/${FLAVOR}.conf"]="$C/hypr/lock-theme.conf"
     ["$C/kitty/themes/${FLAVOR}.conf"]="$C/kitty/current-theme.conf"
@@ -42,17 +41,9 @@ sed -i --follow-symlinks "s/^color_theme = .*/color_theme = \"catppuccin_${FLAVO
 sed -i --follow-symlinks "s/^name = .*/name = \"${HERDR}\"/; s/^accent = .*/accent = \"#${MAUVE}\"/" "$C/herdr/config.toml"
 sed -i --follow-symlinks "s/syntax-theme = Catppuccin .*/syntax-theme = ${BAT}/" "$HOME/.gitconfig"
 printf '%s\n' "--theme=\"${BAT}\"" > "$C/bat/config"
-sed -i --follow-symlinks "s/--color-low '#[0-9a-f]\{6\}'/--color-low '#${LOW}'/;
-        s/--color-mid '#[0-9a-f]\{6\}'/--color-mid '#${MID}'/;
-        s/--color-high '#[0-9a-f]\{6\}'/--color-high '#${HIGH}'/;
-        s/--color-critical '#[0-9a-f]\{6\}'/--color-critical '#${CRIT}'/" "$C/waybar/config"
 
 echo "$FLAVOR" > "$C/nvim/flavor"
 echo "$FLAVOR" > "$C/quickshell/flavor"
-
-killall waybar 2>/dev/null
-setsid waybar >/dev/null 2>&1 &
-disown
 
 hyprctl reload >/dev/null
 pkill -USR1 kitty 2>/dev/null
